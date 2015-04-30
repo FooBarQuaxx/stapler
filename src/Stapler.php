@@ -3,6 +3,9 @@
 use Codesleeve\Stapler\Config\ConfigurableInterface;
 use Codesleeve\Stapler\File\Image\Resizer;
 use Aws\S3\S3Client;
+use League\Flysystem\Filesystem as FlyFilsystem;
+use League\Flysystem\Adapter\Ftp as FtpAdater;
+use League\Flysystem\Sftp\SftpAdapter;
 
 /**
  * Easy file attachment management for Eloquent (Laravel 4).
@@ -215,5 +218,39 @@ class Stapler
     protected static function buildS3Client(Attachment $attachedFile)
     {
         return S3Client::factory($attachedFile->s3_client_config);
+    }
+
+    /**
+     * Return the right Flysystem adapter from
+     * the use configuration defaults to FTP.
+     *
+     * @param $attachedFile
+     * @return League\Flysystem\Adapter\AdapterInterface;
+     */
+    protected static function lookupFlysystemDriverType($attachedFile)
+    {
+        $name = $attachedFile->driver;
+        $connection = $attachedFile->connection;
+        switch ($name) {
+            case 'ftp':
+                return new FtpAdater($connection);
+            case 'sftp':
+                return new SftpAdapter($connection);
+            default:
+                return new FtpAdater($connection);
+        }
+    }
+
+    /**
+     * Creates as League\Flysystem\Filesystem instance
+     * with the right adapter from the configuration.
+     *
+     * @param $attachedFile
+     * @return League\Flysystem\Filesystem
+     */
+    public static function getFlysystemInstance(Attachment $attachedFile)
+    {
+        $adapter = static::lookupFlysystemDriverType($attachedFile);
+        return new FlyFilsystem($adapter);
     }
 }

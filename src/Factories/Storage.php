@@ -3,6 +3,7 @@
 use Codesleeve\Stapler\Attachment as AttachedFile;
 use Codesleeve\Stapler\Storage\Filesystem;
 use Codesleeve\Stapler\Storage\S3;
+use Codesleeve\Stapler\Storage\Flysystem;
 use Codesleeve\Stapler\Stapler;
 
 class Storage
@@ -23,6 +24,11 @@ class Storage
             case 's3':
                 $s3Client = Stapler::getS3ClientInstance($attachment);
                 return new S3($attachment, $s3Client);
+                break;
+
+            case 'flysystem':
+                $flysystem_instance = Stapler::getFlysystemInstance($attachment);
+                return new Flysystem($attachment, $flysystem_instance);
                 break;
 
             default:

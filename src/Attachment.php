@@ -298,7 +298,7 @@ class Attachment
     }
 
     /**
-     * Generates the file system path to an uploaded file (or a resized version of it). 
+     * Generates the file system path to an uploaded file (or a resized version of it).
      * This is used for saving files, etc.
      *
      * @param string $styleName
@@ -425,7 +425,7 @@ class Attachment
     public function beforeDelete(StaplerableInterface $instance)
     {
         $this->instance = $instance;
-        
+
         if (!$this->preserve_files) {
             $this->clear();
         }
@@ -564,7 +564,7 @@ class Attachment
         if (!$this->originalFilename()) {
             return;
         }
-        
+
         $filePaths = array_map(function($style)
         {
             return $this->path($style->name);

@@ -1,4 +1,5 @@
 <?php namespace Codesleeve\Stapler;
+use Codesleeve\Stapler\Exceptions\InvalidStorageEngine;
 
 class Validator
 {
@@ -10,7 +11,19 @@ class Validator
      */
     public function validateOptions(array $options)
     {
-        $options['storage'] == 'filesystem' ? $this->validateFilesystemOptions($options) : $this->validateS3Options($options);
+        switch ($options['storage']) {
+            case 'filesystem':
+                $this->validateFilesystemOptions($options);
+                break;
+            case 's3':
+                $this->validateS3Options($options);
+                break;
+            case 'flysystem':
+                $this->validateFlysystemOptions($options);
+                break;
+            default :
+                throw new InvalidStorageEngine("Invalid Storage engine {$options['storage']}");
+        }
     }
 
     /**
@@ -47,5 +60,10 @@ class Validator
         if (!$options['s3_client_config']['key']) {
             throw new Exceptions\InvalidUrlOptionException('Invalid Path: a key is required for s3 storage.', 1);
         }
+    }
+
+    protected function validateFlysystemOptions(array $options)
+    {
+        // TODO
     }
 }

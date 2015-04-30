@@ -37,6 +37,11 @@ class NativeConfig implements ConfigurableInterface
                 'ACL' => 'public-read',
             ],
             'path' => ':attachment/:id/:style/:filename'
+        ],
+        'flysystem' => [
+            'driver' => 'ftp',
+            'connection' => []
+            'path' => ':id/:filename'
         ]
     ];
 
